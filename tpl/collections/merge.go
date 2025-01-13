@@ -14,18 +14,18 @@
 package collections
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
 
 	"github.com/gohugoio/hugo/common/hreflect"
 	"github.com/gohugoio/hugo/common/maps"
-
-	"errors"
 )
 
-// Merge creates a copy of the final parameter and merges the preceding
+// Merge creates a copy of the final parameter in params and merges the preceding
 // parameters into it in reverse order.
+//
 // Currently only maps are supported. Key handling is case insensitive.
 func (ns *Namespace) Merge(params ...any) (any, error) {
 	if len(params) < 2 {

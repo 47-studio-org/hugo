@@ -5,7 +5,7 @@
 /*
 Package template implements data-driven templates for generating textual output.
 
-To generate HTML output, see package html/template, which has the same interface
+To generate HTML output, see [html/template], which has the same interface
 as this package but automatically secures HTML output against certain attacks.
 
 Templates are executed by applying them to a data structure. Annotations in the
@@ -18,7 +18,6 @@ structure as execution proceeds.
 The input text for a template is UTF-8-encoded text in any format.
 "Actions"--data evaluations or control structures--are delimited by
 "{{" and "}}"; all text outside actions is copied to the output unchanged.
-Except for raw strings, actions may not span newlines, although comments can.
 
 Once parsed, a template may be executed safely in parallel, although if parallel
 executions share a Writer the output may be interleaved.
@@ -144,6 +143,13 @@ data, defined in detail in the corresponding sections that follow.
 		If the value of the pipeline is empty, dot is unaffected and T0
 		is executed; otherwise, dot is set to the value of the pipeline
 		and T1 is executed.
+
+	{{with pipeline}} T1 {{else with pipeline}} T0 {{end}}
+		To simplify the appearance of with-else chains, the else action
+		of a with may include another with directly; the effect is exactly
+		the same as writing
+			{{with pipeline}} T1 {{else}}{{with pipeline}} T0 {{end}}{{end}}
+
 
 Arguments
 
@@ -425,10 +431,10 @@ The syntax of such definitions is to surround each template declaration with a
 The define action names the template being created by providing a string
 constant. Here is a simple example:
 
-	`{{define "T1"}}ONE{{end}}
+	{{define "T1"}}ONE{{end}}
 	{{define "T2"}}TWO{{end}}
 	{{define "T3"}}{{template "T1"}} {{template "T2"}}{{end}}
-	{{template "T3"}}`
+	{{template "T3"}}
 
 This defines two templates, T1 and T2, and a third T3 that invokes the other two
 when it is executed. Finally it invokes T3. If executed this template will
@@ -439,13 +445,13 @@ produce the text
 By construction, a template may reside in only one association. If it's
 necessary to have a template addressable from multiple associations, the
 template definition must be parsed multiple times to create distinct *Template
-values, or must be copied with the Clone or AddParseTree method.
+values, or must be copied with [Template.Clone] or [Template.AddParseTree].
 
 Parse may be called multiple times to assemble the various associated templates;
-see the ParseFiles and ParseGlob functions and methods for simple ways to parse
-related templates stored in files.
+see [ParseFiles], [ParseGlob], [Template.ParseFiles] and [Template.ParseGlob]
+for simple ways to parse related templates stored in files.
 
-A template may be executed directly or through ExecuteTemplate, which executes
+A template may be executed directly or through [Template.ExecuteTemplate], which executes
 an associated template identified by name. To invoke our example above, we
 might write,
 

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build go1.13
-// +build go1.13
-
 package template_test
 
 import (
@@ -18,7 +15,6 @@ import (
 )
 
 func TestTemplateClone(t *testing.T) {
-
 	orig := New("name")
 	clone, err := orig.Clone()
 	if err != nil {
@@ -30,7 +26,7 @@ func TestTemplateClone(t *testing.T) {
 
 	const want = "stuff"
 	parsed := Must(clone.Parse(want))
-	var buf bytes.Buffer
+	var buf strings.Builder
 	err = parsed.Execute(&buf, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -211,7 +207,7 @@ func (c *testCase) mustNotParse(t *Template, text string) {
 }
 
 func (c *testCase) mustExecute(t *Template, val any, want string) {
-	var buf bytes.Buffer
+	var buf strings.Builder
 	err := t.Execute(&buf, val)
 	if err != nil {
 		c.t.Fatalf("execute: %v", err)
